@@ -21,8 +21,8 @@
 #define PSFREE true  // use the newer psfree webkit exploit.
                      // this is fairly stable but may fail which will require you to try and load the payload again.
 
-                     // use SD Card [ true / false ]
-#define USESD false  // a FAT32 formatted SD Card will be used instead of the onboard flash for the storage. \
+// use SD Card [ true / false ]
+#define USESD true   // a FAT32 formatted SD Card will be used instead of the onboard flash for the storage. \
                      // this requires a board with a sd card slot or a sd card connected.
 
                       // use FatFS not SPIFFS [ true / false ]
@@ -70,10 +70,10 @@ String WIFI_HOSTNAME = "ps4.local";
 int WEB_PORT = 80;
 
 //Auto Usb Wait(milliseconds)
-int USB_WAIT = 10000;
+int USB_WAIT = 3000;
 
 // Displayed firmware version
-String firmwareVer = "1.00";
+String firmwareVer = "2.0";
 
 //ESP sleep after x minutes
 boolean espSleep = false;
@@ -90,10 +90,10 @@ int TIME2SLEEP = 30;  // minutes
 #if USESD
 #include "SD.h"
 #include "SPI.h"
-#define SCK 12   // pins for sd card
-#define MISO 13  // these values are set for the LILYGO TTGO T8 ESP32-S2 board
-#define MOSI 11  // you may need to change these for other boards
-#define SS 10
+#define SCK 33   // pins for sd card, same as SCLK
+#define MISO 11  // these values are set for the LILYGO TTGO T8 ESP32-S2 board, same as SDI, SOMI. DI and SO
+#define MOSI 39  // you may need to change these for other boards, same as SDO, SIMO, DO, SI
+#define SS 3     // same as CS, nCS and STE
 #define FILESYS SD
 #else
 #if USEFAT
@@ -338,7 +338,7 @@ void handlePayloads(AsyncWebServerRequest *request) {
   String output = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>ESP Server</title><link rel=\"stylesheet\" href=\"style.css\"><style>body { background-color: #1451AE; color: #ffffff; font-size: 14px; font-weight: bold; margin: 0 0 0 0.0; overflow-y:hidden; text-shadow: 3px 2px DodgerBlue;}</style><script>function setpayload(payload,title,waittime){ sessionStorage.setItem('payload', payload); sessionStorage.setItem('title', title); sessionStorage.setItem('waittime', waittime);  window.open('loader.html', '_self');}</script></head><body><center><h1>9.00 Payloads</h1>";
   int cntr = 0;
   int payloadCount = 0;
-  if (USB_WAIT < 5000) { USB_WAIT = 5000; }  // correct unrealistic timing values
+  if (USB_WAIT < 3000) { USB_WAIT = 3000; }  // correct unrealistic timing values
   if (USB_WAIT > 25000) { USB_WAIT = 25000; }
 
 #if INTHEN
